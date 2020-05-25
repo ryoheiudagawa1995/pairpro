@@ -42,6 +42,7 @@
                 <li class="nav-item">
                   <%= link_to article_path(article), class: 'nav-link' do %>
                     <p><%= article.title %></p>
+                    <span><%= link_to '削除', agenda, method: :delete, data: { confirm: 'Are you sure?' } %></span>
                   <% end %>
                 </li>
               <% end %>
