@@ -1,5 +1,6 @@
 class AssignsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_assign, only: %i[edit destroy]
 
   def create
     team = Team.friendly.find(params[:team_id])
@@ -13,14 +14,13 @@ class AssignsController < ApplicationController
   end
 
   def destroy
-    assign = Assign.find(params[:id])
-    destroy_message = assign_destroy(assign, assign.user)
-    redirect_to team_url(params[:team_id]), notice: destroy_message
+    if @assign.user == current_user || @team.owner == current_user
+      destroy_message = assign_destroy(@assign, @assign.user)
+      redirect_to team_url(params[:team_id]), notice: destroy_message
+    end
   end
 
   def edit
-    @assign = Assign.find(params[:id])
-    @team =Team.find(params[:team_id])
     if current_user = @team.owner
       @team.owner = @assign.user
       @team.save
@@ -31,6 +31,11 @@ class AssignsController < ApplicationController
 
 
   private
+
+  def set_assign
+    @assign = Assign.find(params[:id])
+    @team =Team.find(params[:team_id])
+  end
 
   def assign_params
     params[:email]
