@@ -23,6 +23,7 @@ class AssignsController < ApplicationController
     @team =Team.find(params[:team_id])
     @team.owner = @assign.user
     @team.save
+    ChangeownerMailer.changeowner_mail(@team).deliver
     redirect_to team_url(@team.id)
   end
 
